@@ -18,7 +18,8 @@
     
   
     const startQuiz = async () => {
-    const response = await fetch("http://localhost:8080/quiz/start", {
+    const response = await 
+    fetch(`${import.meta.env.VITE_API_URL}/quiz/start`,   {
       method: "POST"
       
     });
@@ -32,7 +33,7 @@
   if (answered) return;
 
   try {
-    const response = await fetch("http://localhost:8080/quiz/answer", {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/quiz/answer`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -74,7 +75,7 @@
 };
      
     useEffect(() => {
-      fetch(`http://localhost:8080/questions?category=${topic}`)
+      fetch(`${import.meta.env.VITE_API_URL}/questions?category=${topic}`)
         .then((res) => res.json())
         .then((data) => setQuestions(data));
     },[topic]);
@@ -117,7 +118,7 @@
   }, [expiresAt, sessionId]);  
   const saveResult = async () => {
   try {
-    await fetch("http://localhost:8080/quiz/result", {
+    await fetch(`${import.meta.env.VITE_API_URL}/quiz/result`,  {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

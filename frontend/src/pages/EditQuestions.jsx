@@ -5,7 +5,8 @@ function EditQuestions({onBack}) {
   const [editingQuestion, setEditingQuestion] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/questions")
+    fetch(`${import.meta.env.VITE_API_URL}/questions`)
+     
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);
@@ -18,8 +19,8 @@ function EditQuestions({onBack}) {
   };
 
   const handleSave = async () => {
-    const response = await fetch(
-      `http://localhost:8080/questions/${editingQuestion._id}`,
+    const response = await 
+    fetch(`${import.meta.env.VITE_API_URL}/questions/${editingQuestion._id}`, 
       {
         method: "PUT",
         headers: {

@@ -4,7 +4,7 @@ function ViewQuestions({onBack}) {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/questions")
+    fetch(`${import.meta.env.VITE_API_URL}/questions`)
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);

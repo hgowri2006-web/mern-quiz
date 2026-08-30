@@ -4,7 +4,7 @@ function DeleteQuestions({onBack}) {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/questions")
+    fetch(`${import.meta.env.VITE_API_URL}/questions`)
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);
@@ -16,8 +16,9 @@ function DeleteQuestions({onBack}) {
 
     if (!confirmDelete) return;
 
-    const response = await fetch(
-      `http://localhost:8080/questions/${id}`,
+    const response = await 
+    fetch(`${import.meta.env.VITE_API_URL}/${id}`,
+    
       {
         method: "DELETE"
       }

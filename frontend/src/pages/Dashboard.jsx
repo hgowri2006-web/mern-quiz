@@ -6,8 +6,8 @@ function Dashboard({ username, onLogout, onSelectTopic }) {
 
   useEffect(() => {
     if (!username) return;
-
-    fetch(`http://localhost:8080/quiz/results/${username}`)
+fetch(`${import.meta.env.VITE_API_URL}/quiz/results/$username`,)
+    
       .then((res) => res.json())
        .then((data) => setResults(data))
       .catch((error) => console.log(error));

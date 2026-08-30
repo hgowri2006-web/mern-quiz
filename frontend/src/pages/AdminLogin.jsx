@@ -15,7 +15,7 @@ if (password === "") {
   return;
 }
     try {
-      const response = await fetch("http://localhost:8080/admin/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
