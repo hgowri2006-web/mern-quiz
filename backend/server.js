@@ -7,10 +7,11 @@ import User from "./models/User.js";
 import bcrypt from "bcrypt";
 import Admin from "./models/Admin.js";
 import QuizResult from "./models/QuizResult.js";
+import "dotenv/config";
 const app = express();
 app.use(cors());
 app.use(express.json());
-mongoose.connect("mongodb://localhost:27017/quiz_portal")
+  mongoose.connect(process.env.MONGO_URI)
  .then(() => console.log("Mongodb connected"))
  .catch((error) => console.log(error));
 
