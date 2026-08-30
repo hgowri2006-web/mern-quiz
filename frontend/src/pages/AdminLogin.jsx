@@ -15,7 +15,7 @@ if (password === "") {
   return;
 }
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}admin/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
