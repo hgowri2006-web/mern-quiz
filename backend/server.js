@@ -10,13 +10,27 @@ import QuizResult from "./models/QuizResult.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 const app = express();
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-     "https://mern-quiz-sepia.vercel.app/"
-    
-  ]
-}));
+ const cors = require('cors');
+
+const allowedOrigins = [
+  'https://vercel.app', // Main production frontend
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allows your production domain, local testing, and Vercel preview links
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly include OPTIONS
+  allowedHeaders: ['Content-Type', 'Authorization'],    // Allow your apiFetch custom headers
+  optionsSuccessStatus: 200,                            // CRITICAL: Responds safely to preflight checks
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json());
   mongoose.connect(process.env.MONGO_URI)
  .then(() => console.log("Mongodb connected"))
