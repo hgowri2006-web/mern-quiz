@@ -20,13 +20,10 @@ function EditQuestions({onBack}) {
 
   const handleSave = async () => {
     const response = await 
-    fetch(`${import.meta.env.VITE_API_URL}/questions/${editingQuestion._id}`, 
+    apiFetch(`/questions/${editingQuestion._id}`, 
       {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-        },
+         
         body: JSON.stringify(editingQuestion)
       }
     );

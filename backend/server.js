@@ -13,7 +13,8 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://mern-quiz-ktrg.onrender.com"
+    "https://mern-quiz-ktrg.onrender.com",
+    "https://mern-quiz-hsg7qr3k6-gowri11.vercel.app",
   ]
 }));
 app.use(express.json());
