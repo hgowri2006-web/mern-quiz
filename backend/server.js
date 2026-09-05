@@ -7,9 +7,15 @@ import User from "./models/User.js";
 import bcrypt from "bcrypt";
 import Admin from "./models/Admin.js";
 import QuizResult from "./models/QuizResult.js";
+import jwt from "jsonwebtoken";
 import "dotenv/config";
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://mern-quiz-ktrg.onrender.com"
+  ]
+}));
 app.use(express.json());
   mongoose.connect(process.env.MONGO_URI)
  .then(() => console.log("Mongodb connected"))
@@ -18,7 +24,29 @@ app.use(express.json());
 app.get("/", (req,res) => {
     res.send("Quiz Portal backend is running");
 });
+const authenticateAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      message: "Access denied. No token provided."
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.admin = decoded;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid or expired token."
+    });
+  }
+};
 app.get("/questions", async (req,res) => {
   try {
     const category = req.query.category;
@@ -34,7 +62,7 @@ app.get("/questions", async (req,res) => {
   }
 });
 
-app.post("/questions",async (req,res) => {
+app.post("/questions",authenticateAdmin, async (req,res) => {
     const newQuestion = new Question(req.body);
     await newQuestion.save();
     res.json(newQuestion);
@@ -42,8 +70,9 @@ app.post("/questions",async (req,res) => {
 })
 app.post("/quiz/start", async (req, res) => {
     const startTime = new Date();
-    const expiresAt = new Date(startTime.getTime() + 2 * 60 * 1000);
-    const session  = await QuizSession.create({ startTime, expiresAt});
+    const duration = Number(process.env.QUIZ_DURATION) || 120; // Default to 2 minutes if not set
+    const expiresAt = new Date(startTime.getTime() + duration * 1000);
+    const session  = await QuizSession.create({ startTime, expiresAt}); 
     res.json({ sessionId: session._id,
         expiresAt: session.expiresAt
     });
@@ -137,7 +166,7 @@ app.get("/quiz/results/:username", async (req, res) => {
     });
   }
 });
- app.put("/questions/:id", async (req, res) => {
+ app.put("/questions/:id",authenticateAdmin, async (req, res) => {
   try {
     const updatedQuestion = await Question.findByIdAndUpdate(
       req.params.id,
@@ -153,7 +182,7 @@ app.get("/quiz/results/:username", async (req, res) => {
   }
 });
 
-app.delete("/questions/:id", async (req, res) => {
+app.delete("/questions/:id",authenticateAdmin, async (req, res) => {
   try {
     const deletedQuestion = await Question.findByIdAndDelete(
       req.params.id
@@ -259,9 +288,17 @@ app.post("/admin/login", async (req, res) => {
         message: "Invalid username or password"
       });
     }
-
+    const token = jwt.sign(
+  {
+    role: "admin"
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: "2h"
+  }
+);
     res.json({
-      message: "Admin login successful"
+       token,
     });
 
   } catch (error) {
@@ -270,6 +307,8 @@ app.post("/admin/login", async (req, res) => {
     });
   }
 });
-app.listen(8080,() => {
-    console.log("Server is running on port 8080");
+ const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

@@ -1,12 +1,14 @@
  
- import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { QUIZ_TOPICS} from "../quizConstants";
+import { apiFetch } from "../api";
 
 function Dashboard({ username, onLogout, onSelectTopic }) {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
     if (!username) return;
-    fetch(`${import.meta.env.VITE_API_URL}/quiz/results/${username}`)
+    apiFetch("/quiz/results/${username}")
       .then((res) => res.json())
        .then((data) => setResults(data))
       .catch((error) => console.log(error));
@@ -36,31 +38,17 @@ function Dashboard({ username, onLogout, onSelectTopic }) {
 
       <p>Select a topic to begin your quiz.</p>
 
-      <div className="topics">
-
-        <button
-          className="topic-button"
-          onClick={() => onSelectTopic("Astronomy")}
-        >
-          Astronomy🪐
-        </button>
-
-        <button
-          className="topic-button"
-          onClick={() => onSelectTopic("Aptitude")}
-        >
-          Aptitude🧠
-        </button>
-
-        <button
-          className="topic-button"
-          onClick={() => onSelectTopic("Programming")}
-        >
-          Programming💻
-        </button>
-
-      </div>
-
+ <div className="topics">
+  {QUIZ_TOPICS.map((topic) => (
+    <button
+      key={topic.name}
+      className="topic-button"
+      onClick={() => onSelectTopic(topic.name)}
+    >
+      {topic.name} {topic.emoji}
+    </button>
+  ))}
+</div>
     <div className="performance-section">
   <h2>Performance</h2>
 

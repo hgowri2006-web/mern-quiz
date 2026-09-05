@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiFetch } from "../api";
 
 function Signup({ onSignup, onBack }) {
   const [username, setUsername] = useState("");
@@ -16,11 +17,9 @@ function Signup({ onSignup, onBack }) {
   }
 
   try {
-    const response = await  fetch(`${import.meta.env.VITE_API_URL}/signup`, {
+    const response = await  apiFetch("/signup", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+       
       body: JSON.stringify({
         username,
         password

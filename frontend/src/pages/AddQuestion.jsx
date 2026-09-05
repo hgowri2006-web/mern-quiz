@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { QUIZ_TOPICS } from "../quizConstants";
+import {apiFetch} from "../api";
 
 function AddQuestion({onBack}) {
   const [question, setQuestion] = useState("");
@@ -6,6 +8,7 @@ function AddQuestion({onBack}) {
   const [answer, setAnswer] = useState("");
   const [category, setCategory] = useState("");
   const [difficulty, setDifficulty] = useState("easy");
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,15 +21,13 @@ function AddQuestion({onBack}) {
       difficulty
     };
 
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/questions`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(newQuestion)
-    });
+    const response = await apiFetch("/questions", {
+  method: "POST",
+  body: JSON.stringify(newQuestion)
+}); 
+const data = await response.json();
 
+console.log("Add question response:", response.status, data);
     if (response.ok) {
       alert("Question added successfully!");
 
@@ -84,15 +85,17 @@ function AddQuestion({onBack}) {
         />
 
         <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="login-input"
-        >
-          <option value="">Select Category</option>
-          <option value="Astronomy">Astronomy</option>
-          <option value="Aptitude">Aptitude</option>
-          <option value="Programming">Programming</option>
-        </select>
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+               className="login-input">
+  <option value="">Select Category</option>
+
+  {QUIZ_TOPICS.map((topic) => (
+    <option key={topic.name} value={topic.name}>
+      {topic.name} {topic.emoji}
+    </option>
+  ))}
+</select>
 
         <select
           value={difficulty}

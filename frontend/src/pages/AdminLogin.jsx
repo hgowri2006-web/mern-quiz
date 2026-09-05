@@ -1,4 +1,5 @@
  import { useState } from "react";
+import { apiFetch } from "../api";
 
 function AdminLogin({ onLogin ,onBack}) {
   const [username, setUsername] = useState("");
@@ -15,11 +16,9 @@ if (password === "") {
   return;
 }
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/login`, {
+      const response = await apiFetch("/admin/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+         
         body: JSON.stringify({
           username,
           password
@@ -33,7 +32,7 @@ if (password === "") {
         return;
       }
 
-      alert("Admin login successful!");
+      localStorage.setItem("adminToken", data.token);
 
       onLogin();
 

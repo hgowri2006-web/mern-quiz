@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../api";
 
 function EditQuestions({onBack}) {
   const [questions, setQuestions] = useState([]);
   const [editingQuestion, setEditingQuestion] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/questions`)
-     
+    apiFetch("/questions")
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);
@@ -24,7 +24,8 @@ function EditQuestions({onBack}) {
       {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`
         },
         body: JSON.stringify(editingQuestion)
       }

@@ -1,14 +1,15 @@
 
 
   import { useState , useEffect } from 'react'
+  import { apiFetch } from '../api';
   
   function Quiz({topic, onBackToDashboard, username}) {
     const [questions, setQuestions] = useState([]);
-    const[score, setscore]=useState(0);
-    const[currentQuestion, setcurrentQuestion]=useState(0);
-    const [feedback, setfeedback] = useState('');
-    const [answered, setanswered] = useState(false);
-    const [timeLeft, settimeLeft] = useState(null);
+    const[score, setScore]=useState(0);
+    const[currentQuestion, setCurrentQuestion]=useState(0);
+    const [feedback, setFeedback] = useState('');
+    const [answered, setAnswered] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(null);
     const [expiresAt, setExpiresAt] = useState(null);
     const [warning, setWarning] = useState('');
     const [tabSwitches, setTabSwitches] = useState(0);
@@ -19,7 +20,7 @@
   
     const startQuiz = async () => {
     const response = await 
-    fetch(`${import.meta.env.VITE_API_URL}/quiz/start`,   {
+    apiFetch(`/quiz/start`,   {
       method: "POST"
       
     });
@@ -33,11 +34,9 @@
   if (answered) return;
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/quiz/answer`, {
+    const response = await apiFetch("/quiz/answer", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+       
       body: JSON.stringify({
         sessionId,
         questionId: questions[currentQuestion]._id,
@@ -50,8 +49,8 @@
     // Server says the quiz has expired
     if (!response.ok) {
       if (response.status === 403) {
-        setfeedback("Time expired!");
-        setcurrentQuestion(questions.length);
+        setFeedback("Time expired!");
+        setCurrentQuestion(questions.length);
         return;
       }
 
@@ -59,14 +58,14 @@
       return;
     }
 
-    setanswered(true);
+    setAnswered(true);
     setSelectedAnswer(option);
 
     if (data.correct) {
-      setscore((prev) => prev + 1);
-      setfeedback("Correct!");
+      setScore((prev) => prev + 1);
+      setFeedback("Correct!");
     } else {
-      setfeedback("Wrong!");
+      setFeedback("Wrong!");
     }
 
   } catch (error) {
@@ -75,7 +74,7 @@
 };
      
     useEffect(() => {
-      fetch(`${import.meta.env.VITE_API_URL}/questions?category=${topic}`)
+      apiFetch(`/questions?category=${topic}`)
         .then((res) => res.json())
         .then((data) => setQuestions(data));
     },[topic]);
@@ -88,11 +87,11 @@
   
       const seconds = Math.max(0, Math.floor(remaining / 1000));
   
-      settimeLeft(seconds);
+      setTimeLeft(seconds);
   
       if (seconds === 0) {
         clearInterval(timer);
-        setcurrentQuestion(questions.length);
+        setCurrentQuestion(questions.length);
       }
     }, 1000);
   
@@ -118,11 +117,9 @@
   }, [expiresAt, sessionId]);  
   const saveResult = async () => {
   try {
-    await fetch(`${import.meta.env.VITE_API_URL}/quiz/result`,  {
+    await apiFetch(`/quiz/result`,  {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+       
       body: JSON.stringify({
         username,
         sessionId,
@@ -203,14 +200,14 @@
       {feedback && (
         <button className="next-button"
           onClick={async () => {
-            setfeedback('');
-            setanswered(false);
+            setFeedback('');
+            setAnswered(false);
             setSelectedAnswer('');
   
             if (currentQuestion < questions.length - 1) {
-              setcurrentQuestion(currentQuestion + 1);
+              setCurrentQuestion(currentQuestion + 1);
             } else {
-              setcurrentQuestion(questions.length);
+              setCurrentQuestion(questions.length);
               await saveResult();
             }
           }}
@@ -240,12 +237,12 @@
   <div className="result-buttons">
       <button className="restart-button"
         onClick={async () => {
-          setcurrentQuestion(0);
-          setscore(0);
-          setfeedback('');
-          setanswered(false);
+          setCurrentQuestion(0);
+          setScore(0);
+          setFeedback('');
+          setAnswered(false);
           setExpiresAt(null);
-          settimeLeft(null);
+          setTimeLeft(null);
           setTabSwitches(0);
           setWarning('');
   

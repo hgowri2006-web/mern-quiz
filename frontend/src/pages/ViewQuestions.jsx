@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../api";
 
 function ViewQuestions({onBack}) {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/questions`)
+    apiFetch("/questions")
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);
