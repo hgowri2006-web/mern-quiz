@@ -36,6 +36,7 @@ body{
   color: #3730a3;
   font-size: 42px;
   margin-bottom: 25px;
+  text-align: center;
 }
 
 .timer {
@@ -73,6 +74,7 @@ body{
 .next-button,
 .start-button,
 .restart-button {
+  text-align: center;
   padding: 12px 25px;
   border: none;
   border-radius: 8px;
@@ -93,6 +95,7 @@ body{
   font-size: 18px;
   font-weight: bold;
   margin: 15px 0;
+  text-align: center;
 }
 
 .warning {
