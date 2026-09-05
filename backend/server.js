@@ -13,7 +13,7 @@ const app = express();
   
 
 const allowedOrigins = [
-  'https://vercel.app', 
+   
   'http://localhost:5173' // Main production frontend
 ];
 
