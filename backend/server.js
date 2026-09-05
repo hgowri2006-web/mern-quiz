@@ -10,7 +10,7 @@ import QuizResult from "./models/QuizResult.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 const app = express();
- const cors = require('cors');
+  
 
 const allowedOrigins = [
   'https://vercel.app', // Main production frontend
