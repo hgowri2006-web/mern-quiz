@@ -8,7 +8,7 @@ function Dashboard({ username, onLogout, onSelectTopic }) {
 
   useEffect(() => {
     if (!username) return;
-    apiFetch("/quiz/results/${username}")
+    apiFetch(`/quiz/results/${username}`)
       .then((res) => res.json())
        .then((data) => setResults(data))
       .catch((error) => console.log(error));
