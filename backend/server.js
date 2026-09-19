@@ -304,8 +304,13 @@ app.post("/admin/login", async (req, res) => {
         message: "Invalid username or password"
       });
     }
+<<<<<<< HEAD
 console.log("Before JWT:", !!process.env.JWT_SECRET);
   const token = jwt.sign(
+=======
+    console.log("Before JWT:", !!process.env.JWT_SECRET);
+    const token = jwt.sign(
+>>>>>>> 0b896110cf4574f49b0419f29aaab0ed2f1ccd64
   {
     role: "admin"
   },
